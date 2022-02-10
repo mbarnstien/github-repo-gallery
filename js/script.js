@@ -4,6 +4,8 @@ const username = "mbarnstien";
 const repoList = document.querySelector(".repo-list");
 const repoSection = document.querySelector(".repos");
 const repoData = document.querySelector(".repo-data");
+const backToGallery = document.querySelector(".view-repos")
+const filterInput = document.querySelector(".filter-repos")
 
 const profileInformation = async function () {
     const response = await fetch(`https://api.github.com/users/${username}`)
@@ -35,6 +37,7 @@ const fetchRepos = async function( ) {
     const repos = await fetch(`https://api.github.com/users/${username}/repos?direction=desc&per_page=100`);
     const allRepos = await repos.json();
     repoTitle(allRepos);
+    filterInput.classList.remove("hide");
 };
 
 const repoTitle = function (allRepos) {
@@ -80,4 +83,26 @@ const displayRepoInfo = function(repoInfo, languages) {
     repoData.append(repoDiv);
     repoData.classList.remove("hide");
     repoSection.classList.add("hide");
+    backToGallery.classList.remove("hide");
 };
+
+backToGallery.addEventListener("click", function () {
+    repoSection.classList.remove("hide");
+    repoData.classList.add("hide");
+    backToGallery.classList.add("hide");
+});
+
+filterInput.addEventListener("input", function (e) {
+    const searchInput = e.target.value;
+    const repos = document.querySelectorAll(".repo");
+    const searchLower = searchInput.toLowerCase();
+
+    for (const repo of repos) {
+        const repoLower = repo.innerText.toLowerCase();
+        if (repoLower.includes(searchLower)) {
+            repo.classList.remove("hide");
+        } else {
+            repo.classList.add("hide");
+        }
+    }
+});
